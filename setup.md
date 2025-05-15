@@ -53,7 +53,7 @@ mkcert -CAROOT
 - Never share generated key files
 - Root certificate installation process may vary depending on Android device model
 
-## Downloading this project
+## Downloading the project
 
 Download the project and move to the project folder with the following commands:
 

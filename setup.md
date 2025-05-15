@@ -228,105 +228,6 @@ This command performs the following:
 - dfx:start must be running before deployment
 - Deployment may take several minutes to complete
 
-## Deploying Canisters for Playground
-
-To deploy Canisters to the playground, execute the following command:
-
-```bash
-npm run dfx:deploy:playground
-```
-
-## Preparation Steps for ICP Mainnet (ic) Deployment
-
-1. Create and switch to a development identity
-
-```bash
-dfx identity new dev
-dfx identity use dev
-```
-
-2. Get your account's ledger account ID
-
-```bash
-dfx ledger account-id
-```
-
-3. Send ICP tokens to your ledger account ID
-
-You can obtain ICP tokens from an exchange. If you are using an exchange, initiate a withdrawal transaction, then enter the ledger account ID as the "destination" address to send ICP tokens to.
-
-4. Check your ICP balance
-
-```bash
-dfx ledger balance --network=ic
-```
-
-5. Convert ICP into cycles
-
-Replace `AMOUNT` with the number of ICP tokens you want to convert into cycles:
-
-```bash
-dfx cycles convert --amount AMOUNT --network=ic
-```
-
-6. Confirm your cycles balance
-
-```bash
-dfx cycles balance --network=ic
-```
-
-**Important Notes**
-
-- Make sure you have enough ICP tokens in your account before converting to cycles.
-- The conversion rate from ICP to cycles is fixed and determined by the Internet Computer protocol.
-- You can check your cycles balance at any time using `dfx cycles balance --network=ic`.
-- For more information about cycles and resource consumption, see the [Internet Computer documentation](https://internetcomputer.org/docs/building-apps/getting-started/tokens-and-cycles).
-- For detailed instructions on obtaining cycles, see the [Obtaining cycles](https://internetcomputer.org/docs/building-apps/getting-started/tokens-and-cycles#obtaining-cycles) section of the Internet Computer documentation.
-
-## Backup and Restore Developer's Private Key
-
-### Export Private Key
-
-```bash
-dfx identity export dev > dev.pem
-```
-
-This command saves the private key of the dev identity in PEM format to the dev.pem file.
-
-### Import Private Key
-
-```bash
-dfx identity import dev dev.pem
-```
-
-This imports the private key from the exported PEM file and registers it as the dev identity.
-
-**Important Notes**
-
-- You will be prompted for a passphrase during import
-- The passphrase must be at least 8 characters long
-- Store your passphrase securely and don't forget it
-- The PEM file contains sensitive private key data and must be stored securely
-- It is recommended to safely delete the PEM file after successful import
-
-## Deploying Canisters for IC
-
-To deploy Canisters to the IC (Internet Computer), execute the following command:
-
-```bash
-npm run dfx:deploy:ic
-```
-
-This command performs the following operations:
-
-1. Builds all Canisters (internet-identity, ii-integration, expo-starter-frontend, expo-starter-backend)
-2. Installs the built Canisters to the IC mainnet
-
-**Important Notes**
-
-- Deployment may take several minutes
-- Mainnet deployment requires cycles for operation
-
 ## Starting local-ssl-proxy
 
 Here's how to start local-ssl-proxy
@@ -364,6 +265,34 @@ This command performs the following:
 2. Displays a QR code
 3. Shows an operation menu
 
+### Troubleshooting
+
+#### Outdated Expo Dependencies
+
+If you see a warning about outdated Expo packages, it means some of your Expo-related dependencies are not at their recommended versions. This can cause compatibility issues.
+
+You might encounter an error message like this:
+
+```
+The following packages should be updated for best compatibility with the installed expo version:
+  expo@53.0.7 - expected version: 53.0.9
+  expo-constants@17.1.5 - expected version: ~17.1.6
+  expo-image@2.1.6 - expected version: ~2.1.7
+  expo-linking@7.1.4 - expected version: ~7.1.5
+  expo-router@5.0.5 - expected version: ~5.0.7
+Your project may not work correctly until you install the expected versions of the packages.
+Found outdated dependencies
+```
+
+To resolve this, run the following command in `src/frontend` directory:
+
+```bash
+cd src/frontend
+npx expo install --fix
+```
+
+This command will automatically update all Expo-related packages to their compatible versions.
+
 ### Main Operations
 
 - Press `w` key: Launch app in web browser
@@ -385,12 +314,30 @@ This command performs the following:
 - Mainnet Internet Identity works
 - Please perform Expo Go testing on iOS
 
-## Key Points about Internet Identity
+## Troubleshooting for Internet Identity
 
-When selecting an Identity on the Choose Identity page, you may get an Unknown Internet Identity error.
-This occurs when the local Internet Identity is redeployed after creating an Identity.
-The browser remembers the Identity, but the local Internet Identity has forgotten it.
+### Unknown Internet Identity Error
+
+#### Issue Description
+When selecting an Identity on the Choose Identity page, you may encounter an "Unknown Internet Identity" error. This typically happens when:
+- The local Internet Identity canister has been redeployed
+- You previously created an Identity that is no longer recognized
+
+The error occurs because while your browser remembers the Identity, the local Internet Identity canister has lost this information during redeployment.
+
 ![Unknown Internet Identity](./images/unknown-internet-identity.png)
 
-In such cases, tap More options displayed under Identity. Tap the Create New button in the bottom left. You can recreate Identity 10000.
+#### Solution
+To resolve this issue:
+
+1. On the Choose Identity page, locate the problematic Identity
+2. Tap "More options" displayed under the Identity
+3. Tap the "Create New" button in the bottom left
+4. You can recreate Identity 10000
+
 ![Create new Identity](./images/create-new.png)
+
+#### Prevention
+To avoid this issue in the future:
+- Avoid redeploying the Internet Identity canister after creating Identities
+- If you need to redeploy, be prepared to recreate your Identities
